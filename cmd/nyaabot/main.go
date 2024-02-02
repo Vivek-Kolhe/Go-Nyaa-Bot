@@ -12,7 +12,7 @@ import (
 )
 
 func init() {
-	err := godotenv.Load()
+	err := godotenv.Load("D:\\Code\\Go Workspace\\src\\github.com\\Vivek-Kolhe\\gonyaa-bot\\.env")
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
