@@ -28,9 +28,9 @@ func main() {
 
 	b, err := bot.New(os.Getenv("BOT_TOKEN"), opts...)
 	if err != nil {
-		panic(err.Error())
+		log.Panic(err.Error())
 	}
 
-	// b.RegisterHandler(bot.HandlerTypeMessageText, "/start", bot.MatchTypeExact, handlers.HelloHandler)
+	b.RegisterHandler(bot.HandlerTypeMessageText, "/start", bot.MatchTypeExact, handlers.StartHandler)
 	b.Start(ctx)
 }
