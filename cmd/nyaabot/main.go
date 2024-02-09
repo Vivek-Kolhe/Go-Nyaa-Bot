@@ -22,12 +22,15 @@ func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer cancel()
 
-	token := os.Getenv("BOT_TOKEN")
-	b, err := bot.New(token)
+	opts := []bot.Option{
+		bot.WithDefaultHandler(handlers.DefaultHandler),
+	}
+
+	b, err := bot.New(os.Getenv("BOT_TOKEN"), opts...)
 	if err != nil {
 		panic(err.Error())
 	}
 
-	b.RegisterHandler(bot.HandlerTypeMessageText, "/start", bot.MatchTypeExact, handlers.HelloHandler)
+	// b.RegisterHandler(bot.HandlerTypeMessageText, "/start", bot.MatchTypeExact, handlers.HelloHandler)
 	b.Start(ctx)
 }
