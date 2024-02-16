@@ -24,6 +24,8 @@ func main() {
 
 	opts := []bot.Option{
 		bot.WithDefaultHandler(handlers.DefaultHandler),
+		bot.WithCallbackQueryDataHandler("sukebeihelp", bot.MatchTypeExact, handlers.SukebeiHelpCallback),
+		bot.WithCallbackQueryDataHandler("backhelp", bot.MatchTypeExact, handlers.BackCallback),
 	}
 
 	b, err := bot.New(os.Getenv("BOT_TOKEN"), opts...)
@@ -32,5 +34,6 @@ func main() {
 	}
 
 	b.RegisterHandler(bot.HandlerTypeMessageText, "/start", bot.MatchTypeExact, handlers.StartHandler)
+	b.RegisterHandler(bot.HandlerTypeMessageText, "/help", bot.MatchTypeExact, handlers.HelpHandler)
 	b.Start(ctx)
 }
