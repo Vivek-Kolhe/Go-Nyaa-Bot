@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"strings"
 
 	"github.com/Vivek-Kolhe/gonyaa-bot/pkg/constants"
 	"github.com/go-telegram/bot"
@@ -17,7 +18,19 @@ func HelpHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
 	})
 }
 
-func NyaaHelpCallback(ctx context.Context, b *bot.Bot, update *models.Update) {
+func HelpCallbackHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
+	callbackData := strings.Split(update.CallbackQuery.Data, " | ")[1]
+	switch callbackData {
+	case "nyaa":
+		handleCallback(ctx, b, update, constants.NyaaHelpMessage, constants.BackButton)
+	case "sukebei":
+		handleCallback(ctx, b, update, constants.SukebeiHelpMessage, constants.BackButton)
+	case "back":
+		handleCallback(ctx, b, update, constants.HelpMessage, constants.HelpButtons)
+	}
+}
+
+func handleCallback(ctx context.Context, b *bot.Bot, update *models.Update, msg string, replyMarkUp *models.InlineKeyboardMarkup) {
 	b.AnswerCallbackQuery(ctx, &bot.AnswerCallbackQueryParams{
 		CallbackQueryID: update.CallbackQuery.ID,
 		ShowAlert:       false,
@@ -26,44 +39,11 @@ func NyaaHelpCallback(ctx context.Context, b *bot.Bot, update *models.Update) {
 	b.EditMessageText(ctx, &bot.EditMessageTextParams{
 		ChatID:      update.CallbackQuery.Message.Chat.ID,
 		MessageID:   update.CallbackQuery.Message.MessageID,
-		Text:        constants.NyaaHelpMessage,
+		Text:        msg,
 		ParseMode:   models.ParseModeMarkdown,
-		ReplyMarkup: constants.BackButton,
+		ReplyMarkup: replyMarkUp,
 		LinkPreviewOptions: &models.LinkPreviewOptions{
 			IsDisabled: bot.True(),
 		},
-	})
-}
-
-func SukebeiHelpCallback(ctx context.Context, b *bot.Bot, update *models.Update) {
-	b.AnswerCallbackQuery(ctx, &bot.AnswerCallbackQueryParams{
-		CallbackQueryID: update.CallbackQuery.ID,
-		ShowAlert:       false,
-	})
-
-	b.EditMessageText(ctx, &bot.EditMessageTextParams{
-		ChatID:      update.CallbackQuery.Message.Chat.ID,
-		MessageID:   update.CallbackQuery.Message.MessageID,
-		Text:        constants.SukebeiHelpMessage,
-		ParseMode:   models.ParseModeMarkdown,
-		ReplyMarkup: constants.BackButton,
-		LinkPreviewOptions: &models.LinkPreviewOptions{
-			IsDisabled: bot.True(),
-		},
-	})
-}
-
-func BackCallback(ctx context.Context, b *bot.Bot, update *models.Update) {
-	b.AnswerCallbackQuery(ctx, &bot.AnswerCallbackQueryParams{
-		CallbackQueryID: update.CallbackQuery.ID,
-		ShowAlert:       false,
-	})
-
-	b.EditMessageText(ctx, &bot.EditMessageTextParams{
-		ChatID:      update.CallbackQuery.Message.Chat.ID,
-		MessageID:   update.CallbackQuery.Message.MessageID,
-		Text:        constants.HelpMessage,
-		ReplyMarkup: constants.HelpButtons,
-		ParseMode:   models.ParseModeMarkdown,
 	})
 }

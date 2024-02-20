@@ -24,9 +24,7 @@ func main() {
 
 	opts := []bot.Option{
 		bot.WithDefaultHandler(handlers.DefaultHandler),
-		bot.WithCallbackQueryDataHandler("nyaahelp", bot.MatchTypeExact, handlers.NyaaHelpCallback),
-		bot.WithCallbackQueryDataHandler("sukebeihelp", bot.MatchTypeExact, handlers.SukebeiHelpCallback),
-		bot.WithCallbackQueryDataHandler("backhelp", bot.MatchTypeExact, handlers.BackCallback),
+		bot.WithCallbackQueryDataHandler("help", bot.MatchTypePrefix, handlers.HelpCallbackHandler),
 	}
 
 	b, err := bot.New(os.Getenv("BOT_TOKEN"), opts...)
