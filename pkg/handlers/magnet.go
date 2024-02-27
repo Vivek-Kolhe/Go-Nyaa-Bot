@@ -40,6 +40,11 @@ func MagnetHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
 }
 
 func MagnetCallbackHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
+	b.AnswerCallbackQuery(ctx, &bot.AnswerCallbackQueryParams{
+		CallbackQueryID: update.CallbackQuery.ID,
+		ShowAlert:       false,
+	})
+
 	var url string
 	callbackData := strings.Split(update.CallbackQuery.Data, " #$ ")
 	site, torrID := callbackData[1], callbackData[2]
@@ -62,10 +67,19 @@ func MagnetCallbackHandler(ctx context.Context, b *bot.Bot, update *models.Updat
 		log.Panic(err.Error())
 	}
 
+	linkBtn := &models.InlineKeyboardMarkup{
+		InlineKeyboard: [][]models.InlineKeyboardButton{
+			{
+				{Text: "View Torrent?", URL: data.Data.Link},
+			},
+		},
+	}
+
 	b.EditMessageText(ctx, &bot.EditMessageTextParams{
-		ChatID:    update.CallbackQuery.Message.Chat.ID,
-		MessageID: update.CallbackQuery.Message.MessageID,
-		Text:      utils.GenerateTorrInfoMsg(data),
-		ParseMode: models.ParseModeMarkdown,
+		ChatID:      update.CallbackQuery.Message.Chat.ID,
+		MessageID:   update.CallbackQuery.Message.MessageID,
+		Text:        utils.GenerateTorrInfoMsg(data),
+		ParseMode:   models.ParseModeMarkdown,
+		ReplyMarkup: linkBtn,
 	})
 }
