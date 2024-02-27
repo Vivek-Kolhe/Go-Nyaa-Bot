@@ -8,8 +8,8 @@ import "github.com/go-telegram/bot/models"
 var HelpButtons = &models.InlineKeyboardMarkup{
 	InlineKeyboard: [][]models.InlineKeyboardButton{
 		{
-			{Text: "Nyaa", CallbackData: "help | nyaa"},
-			{Text: "Sukebei", CallbackData: "help | sukebei"},
+			{Text: "Nyaa", CallbackData: "help #$ nyaa"},
+			{Text: "Sukebei", CallbackData: "help #$ sukebei"},
 		},
 	},
 }
@@ -17,7 +17,7 @@ var HelpButtons = &models.InlineKeyboardMarkup{
 var BackButton = &models.InlineKeyboardMarkup{
 	InlineKeyboard: [][]models.InlineKeyboardButton{
 		{
-			{Text: "Back", CallbackData: "help | back"},
+			{Text: "Back", CallbackData: "help #$ back"},
 		},
 	},
 }

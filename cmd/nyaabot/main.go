@@ -34,5 +34,6 @@ func main() {
 
 	b.RegisterHandler(bot.HandlerTypeMessageText, "/start", bot.MatchTypeExact, handlers.StartHandler)
 	b.RegisterHandler(bot.HandlerTypeMessageText, "/help", bot.MatchTypeExact, handlers.HelpHandler)
+	b.RegisterHandler(bot.HandlerTypeMessageText, "/magnet", bot.MatchTypeContains, handlers.MagnetHandler)
 	b.Start(ctx)
 }

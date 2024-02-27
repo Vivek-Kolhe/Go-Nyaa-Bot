@@ -19,7 +19,7 @@ func HelpHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
 }
 
 func HelpCallbackHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
-	callbackData := strings.Split(update.CallbackQuery.Data, " | ")[1]
+	callbackData := strings.Split(update.CallbackQuery.Data, " #$ ")[1]
 	switch callbackData {
 	case "nyaa":
 		handleCallback(ctx, b, update, constants.NyaaHelpMessage, constants.BackButton)

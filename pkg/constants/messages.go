@@ -24,3 +24,8 @@ var NyaaHelpMessage = "*For searching on [Nyaa](https://nyaa.si)*:" +
 
 var SukebeiHelpMessage = "*For searching on [Sukebei](https://sukebei.nyaa.si)*:" +
 	bot.EscapeMarkdown("\n\n- /art - Art torrents (anime, manga, doujinshi etc.).\n- /real - Non-Anime torrents.")
+
+// Messages used with magnet command
+var MagnetMessage = "Where do you wanna search?"
+
+var NoIDMessage = "No ID provided."
