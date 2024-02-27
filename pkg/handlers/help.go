@@ -22,15 +22,15 @@ func HelpCallbackHandler(ctx context.Context, b *bot.Bot, update *models.Update)
 	callbackData := strings.Split(update.CallbackQuery.Data, " #$ ")[1]
 	switch callbackData {
 	case "nyaa":
-		handleCallback(ctx, b, update, constants.NyaaHelpMessage, constants.BackButton)
+		handleHelpCallback(ctx, b, update, constants.NyaaHelpMessage, constants.BackButton)
 	case "sukebei":
-		handleCallback(ctx, b, update, constants.SukebeiHelpMessage, constants.BackButton)
+		handleHelpCallback(ctx, b, update, constants.SukebeiHelpMessage, constants.BackButton)
 	case "back":
-		handleCallback(ctx, b, update, constants.HelpMessage, constants.HelpButtons)
+		handleHelpCallback(ctx, b, update, constants.HelpMessage, constants.HelpButtons)
 	}
 }
 
-func handleCallback(ctx context.Context, b *bot.Bot, update *models.Update, msg string, replyMarkUp *models.InlineKeyboardMarkup) {
+func handleHelpCallback(ctx context.Context, b *bot.Bot, update *models.Update, msg string, replyMarkUp *models.InlineKeyboardMarkup) {
 	b.AnswerCallbackQuery(ctx, &bot.AnswerCallbackQueryParams{
 		CallbackQueryID: update.CallbackQuery.ID,
 		ShowAlert:       false,
