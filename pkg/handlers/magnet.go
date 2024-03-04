@@ -56,9 +56,22 @@ func MagnetCallbackHandler(ctx context.Context, b *bot.Bot, update *models.Updat
 		url = fmt.Sprintf("%s%s", constants.SukebeiMagnet, torrID)
 	}
 
-	bytes, err := utils.MakeRequest(url)
-	if err != nil {
-		log.Panic(err.Error())
+	bytes, statusCode, err := utils.MakeRequest(url)
+	if statusCode != 200 || err != nil {
+		if statusCode == 404 || statusCode == 422 {
+			b.EditMessageText(ctx, &bot.EditMessageTextParams{
+				ChatID:    update.CallbackQuery.Message.Chat.ID,
+				MessageID: update.CallbackQuery.Message.MessageID,
+				Text:      "Invalid ID!",
+			})
+			return
+		}
+		b.EditMessageText(ctx, &bot.EditMessageTextParams{
+			ChatID:    update.CallbackQuery.Message.Chat.ID,
+			MessageID: update.CallbackQuery.Message.MessageID,
+			Text:      "Something went wrong!",
+		})
+		return
 	}
 
 	var data *structs.TorrInfo
