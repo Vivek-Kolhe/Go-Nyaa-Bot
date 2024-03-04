@@ -26,7 +26,7 @@ func main() {
 		bot.WithDefaultHandler(handlers.DefaultHandler),
 		bot.WithCallbackQueryDataHandler("help", bot.MatchTypePrefix, handlers.HelpCallbackHandler),
 		bot.WithCallbackQueryDataHandler("magnet", bot.MatchTypePrefix, handlers.MagnetCallbackHandler),
-		bot.WithCallbackQueryDataHandler("nyaa", bot.MatchTypePrefix, handlers.NyaaCallbackHandler),
+		bot.WithCallbackQueryDataHandler("nyaa", bot.MatchTypePrefix, handlers.NyaaCatCallbackHandler),
 	}
 
 	b, err := bot.New(os.Getenv("BOT_TOKEN"), opts...)

@@ -9,16 +9,16 @@ import (
 	"github.com/go-telegram/bot/models"
 )
 
-var cats = []string{"Anime", "Manga", "Audio", "Pics", "LA", "Software"}
+var cats = []string{"Anime", "Manga", "Audio", "Pics", "Live Action", "Software"}
 
-// var subCatMap = map[string][]string{
-// 	"Anime":    []string{"AMV", "Eng", "Non-Eng", "Raw"},
-// 	"Manga":    []string{"Eng", "Non-Eng", "Raw"},
-// 	"Audio":    []string{"Lossy", "Lossless"},
-// 	"Pics":     []string{"Photos", "Graphics"},
-// 	"LA":       []string{"Promo", "Eng", "Non-Eng", "Raw"},
-// 	"Software": []string{"Applications", "Games"},
-// }
+var subCatMap = map[string][]string{
+	"anime":       []string{"AMV", "Eng", "Non-Eng", "Raw"},
+	"manga":       []string{"Eng", "Non-Eng", "Raw"},
+	"audio":       []string{"Lossy", "Lossless"},
+	"pics":        []string{"Photos", "Graphics"},
+	"live action": []string{"Promo", "Eng", "Non-Eng", "Raw"},
+	"software":    []string{"Applications", "Games"},
+}
 
 func NyaaHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
 	msgSlice := strings.SplitN(update.Message.Text, " ", 2)
@@ -38,9 +38,28 @@ func NyaaHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
 	})
 }
 
-func NyaaCallbackHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
+func NyaaCatCallbackHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
+	b.AnswerCallbackQuery(ctx, &bot.AnswerCallbackQueryParams{
+		CallbackQueryID: update.CallbackQuery.ID,
+		ShowAlert:       false,
+	})
+
+	callbackSlice := strings.Split(update.CallbackQuery.Data, " #$ ")
+
+	if len(callbackSlice) == 3 {
+		b.SendMessage(ctx, &bot.SendMessageParams{
+			ChatID: update.CallbackQuery.Message.Chat.ID,
+			// MessageID: update.CallbackQuery.Message.MessageID,
+			Text: "Choose one of the following sub-categories: ",
+			ReplyMarkup: &models.InlineKeyboardMarkup{
+				InlineKeyboard: utils.GenerateSubCatBtns(subCatMap, callbackSlice),
+			},
+		})
+		return
+	}
 	b.SendMessage(ctx, &bot.SendMessageParams{
 		ChatID: update.CallbackQuery.Message.Chat.ID,
-		Text:   update.CallbackQuery.Data,
+		// MessageID: update.CallbackQuery.Message.MessageID,
+		Text: update.CallbackQuery.Data,
 	})
 }
