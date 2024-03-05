@@ -74,7 +74,7 @@ func MagnetCallbackHandler(ctx context.Context, b *bot.Bot, update *models.Updat
 		return
 	}
 
-	var data *structs.TorrInfo
+	var data structs.TorrInfo
 	err = json.Unmarshal(bytes, &data)
 	if err != nil {
 		log.Panic(err.Error())

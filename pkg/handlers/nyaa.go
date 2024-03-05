@@ -2,8 +2,12 @@ package handlers
 
 import (
 	"context"
+	"encoding/json"
+	"log"
 	"strings"
 
+	"github.com/Vivek-Kolhe/gonyaa-bot/pkg/constants"
+	"github.com/Vivek-Kolhe/gonyaa-bot/pkg/structs"
 	"github.com/Vivek-Kolhe/gonyaa-bot/pkg/utils"
 	"github.com/go-telegram/bot"
 	"github.com/go-telegram/bot/models"
@@ -12,12 +16,12 @@ import (
 var cats = []string{"Anime", "Manga", "Audio", "Pics", "Live Action", "Software"}
 
 var subCatMap = map[string][]string{
-	"anime":       []string{"AMV", "Eng", "Non-Eng", "Raw"},
-	"manga":       []string{"Eng", "Non-Eng", "Raw"},
-	"audio":       []string{"Lossy", "Lossless"},
-	"pics":        []string{"Photos", "Graphics"},
-	"live action": []string{"Promo", "Eng", "Non-Eng", "Raw"},
-	"software":    []string{"Applications", "Games"},
+	"anime":       {"AMV", "Eng", "Non-Eng", "Raw"},
+	"manga":       {"Eng", "Non-Eng", "Raw"},
+	"audio":       {"Lossy", "Lossless"},
+	"pics":        {"Photos", "Graphics"},
+	"live action": {"Promo", "Eng", "Non-Eng", "Raw"},
+	"software":    {"Applications", "Games"},
 }
 
 func NyaaHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
@@ -47,19 +51,53 @@ func NyaaCatCallbackHandler(ctx context.Context, b *bot.Bot, update *models.Upda
 	callbackSlice := strings.Split(update.CallbackQuery.Data, " #$ ")
 
 	if len(callbackSlice) == 3 {
-		b.SendMessage(ctx, &bot.SendMessageParams{
-			ChatID: update.CallbackQuery.Message.Chat.ID,
-			// MessageID: update.CallbackQuery.Message.MessageID,
-			Text: "Choose one of the following sub-categories: ",
+		b.EditMessageText(ctx, &bot.EditMessageTextParams{
+			ChatID:    update.CallbackQuery.Message.Chat.ID,
+			MessageID: update.CallbackQuery.Message.MessageID,
+			Text:      "Choose one of the following sub-categories: ",
 			ReplyMarkup: &models.InlineKeyboardMarkup{
 				InlineKeyboard: utils.GenerateSubCatBtns(subCatMap, callbackSlice),
 			},
 		})
 		return
 	}
+
+	params := make(map[string]string)
+	params["category"] = strings.ReplaceAll(callbackSlice[1], " ", "_")
+	params["sub_category"] = callbackSlice[2]
+	params["q"] = callbackSlice[3]
+
+	url := utils.GenerateURL(constants.Nyaa, params)
+
+	bytes, statusCode, err := utils.MakeRequest(url)
+	if statusCode != 200 || err != nil {
+		b.EditMessageText(ctx, &bot.EditMessageTextParams{
+			ChatID:    update.CallbackQuery.Message.Chat.ID,
+			MessageID: update.CallbackQuery.Message.MessageID,
+			Text:      url,
+		})
+		return
+	}
+
+	var data structs.Torrents
+	err = json.Unmarshal(bytes, &data)
+	if err != nil {
+		log.Panic(err.Error())
+	}
+
+	if data.Count < 1 {
+		b.EditMessageText(ctx, &bot.EditMessageTextParams{
+			ChatID:    update.CallbackQuery.Message.Chat.ID,
+			MessageID: update.CallbackQuery.Message.MessageID,
+			Text:      "No results found!",
+		})
+		return
+	}
+
 	b.SendMessage(ctx, &bot.SendMessageParams{
 		ChatID: update.CallbackQuery.Message.Chat.ID,
 		// MessageID: update.CallbackQuery.Message.MessageID,
-		Text: update.CallbackQuery.Data,
+		Text:      strings.Join(utils.GenerateTorrListMsg(data), "\n"),
+		ParseMode: models.ParseModeMarkdown,
 	})
 }

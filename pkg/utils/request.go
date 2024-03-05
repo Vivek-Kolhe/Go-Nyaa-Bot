@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 )
@@ -17,4 +18,11 @@ func MakeRequest(url string) ([]byte, int, error) {
 		return nil, 0, err
 	}
 	return body, response.StatusCode, err
+}
+
+func GenerateURL(endpoint string, params map[string]string) string {
+	for k, v := range params {
+		endpoint += fmt.Sprintf("%s=%s&", k, v)
+	}
+	return endpoint
 }
