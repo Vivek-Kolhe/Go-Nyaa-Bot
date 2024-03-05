@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/Vivek-Kolhe/gonyaa-bot/pkg/structs"
 	"github.com/go-telegram/bot"
@@ -20,10 +21,16 @@ func GenerateTorrInfoMsg(data structs.TorrInfo) string {
 }
 
 func GenerateTorrListMsg(data structs.Torrents) []string {
-	result := make([]string, 0)
-	for i := 0; i < min(data.Count, 20); i++ {
-		temp := "*" + bot.EscapeMarkdown(data.Data[i].Title) + "*"
-		result = append(result, temp)
+	msgs := make([]string, 0)
+	for i := 0; i < min(data.Count, 10); i++ {
+		link := strings.Split(data.Data[i].Link, "/")
+		id := link[len(link)-1]
+		msg := "*" + bot.EscapeMarkdown(data.Data[i].Title) + "*" +
+			"\n*ID: *" + "`" + bot.EscapeMarkdown(id) + "`" +
+			"\n*Size: *" + "`" + bot.EscapeMarkdown(data.Data[i].Size) + "`" +
+			"\n*Seeders/Leechers: *" + "`" + bot.EscapeMarkdown(fmt.Sprintf("%d/%d", data.Data[i].Seeders, data.Data[i].Leechers)) + "`"
+
+		msgs = append(msgs, msg)
 	}
-	return result
+	return msgs
 }

@@ -3,7 +3,9 @@ package handlers
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
+	"net/url"
 	"strings"
 
 	"github.com/Vivek-Kolhe/gonyaa-bot/pkg/constants"
@@ -62,13 +64,12 @@ func NyaaCatCallbackHandler(ctx context.Context, b *bot.Bot, update *models.Upda
 		return
 	}
 
-	params := make(map[string]string)
-	params["category"] = strings.ReplaceAll(callbackSlice[1], " ", "_")
-	params["sub_category"] = callbackSlice[2]
-	params["q"] = callbackSlice[3]
+	params := url.Values{}
+	params.Set("category", strings.ReplaceAll(callbackSlice[1], " ", "_"))
+	params.Set("sub_category", callbackSlice[2])
+	params.Set("q", callbackSlice[3])
 
-	url := utils.GenerateURL(constants.Nyaa, params)
-
+	url := fmt.Sprintf("%s?%s", constants.Nyaa, params.Encode())
 	bytes, statusCode, err := utils.MakeRequest(url)
 	if statusCode != 200 || err != nil {
 		b.EditMessageText(ctx, &bot.EditMessageTextParams{
@@ -94,10 +95,10 @@ func NyaaCatCallbackHandler(ctx context.Context, b *bot.Bot, update *models.Upda
 		return
 	}
 
-	b.SendMessage(ctx, &bot.SendMessageParams{
-		ChatID: update.CallbackQuery.Message.Chat.ID,
-		// MessageID: update.CallbackQuery.Message.MessageID,
-		Text:      strings.Join(utils.GenerateTorrListMsg(data), "\n"),
+	b.EditMessageText(ctx, &bot.EditMessageTextParams{
+		ChatID:    update.CallbackQuery.Message.Chat.ID,
+		MessageID: update.CallbackQuery.Message.MessageID,
+		Text:      strings.Join(utils.GenerateTorrListMsg(data), "\n\n"),
 		ParseMode: models.ParseModeMarkdown,
 	})
 }
