@@ -26,7 +26,8 @@ func main() {
 		bot.WithDefaultHandler(handlers.DefaultHandler),
 		bot.WithCallbackQueryDataHandler("help", bot.MatchTypePrefix, handlers.HelpCallbackHandler),
 		bot.WithCallbackQueryDataHandler("magnet", bot.MatchTypePrefix, handlers.MagnetCallbackHandler),
-		bot.WithCallbackQueryDataHandler("nyaa", bot.MatchTypePrefix, handlers.NyaaCatCallbackHandler),
+		bot.WithCallbackQueryDataHandler("nyaa", bot.MatchTypePrefix, handlers.SearchCallbackHandler),
+		bot.WithCallbackQueryDataHandler("sukebei", bot.MatchTypePrefix, handlers.SearchCallbackHandler),
 	}
 
 	b, err := bot.New(os.Getenv("BOT_TOKEN"), opts...)
@@ -37,6 +38,7 @@ func main() {
 	b.RegisterHandler(bot.HandlerTypeMessageText, "/start", bot.MatchTypeExact, handlers.StartHandler)
 	b.RegisterHandler(bot.HandlerTypeMessageText, "/help", bot.MatchTypeExact, handlers.HelpHandler)
 	b.RegisterHandler(bot.HandlerTypeMessageText, "/magnet", bot.MatchTypePrefix, handlers.MagnetHandler)
-	b.RegisterHandler(bot.HandlerTypeMessageText, "/nyaa", bot.MatchTypePrefix, handlers.NyaaHandler)
+	b.RegisterHandler(bot.HandlerTypeMessageText, "/nyaa", bot.MatchTypePrefix, handlers.SearchHandler)
+	b.RegisterHandler(bot.HandlerTypeMessageText, "/sukebei", bot.MatchTypePrefix, handlers.SearchHandler)
 	b.Start(ctx)
 }

@@ -15,18 +15,29 @@ import (
 	"github.com/go-telegram/bot/models"
 )
 
-var cats = []string{"Anime", "Manga", "Audio", "Pics", "Live Action", "Software"}
+var (
+	cats = map[string][]string{
+		"nyaa":    {"Anime", "Manga", "Audio", "Pictures", "Live Action", "Software"},
+		"sukebei": {"Art", "Real"},
+	}
 
-var subCatMap = map[string][]string{
-	"anime":       {"AMV", "Eng", "Non-Eng", "Raw"},
-	"manga":       {"Eng", "Non-Eng", "Raw"},
-	"audio":       {"Lossy", "Lossless"},
-	"pics":        {"Photos", "Graphics"},
-	"live action": {"Promo", "Eng", "Non-Eng", "Raw"},
-	"software":    {"Applications", "Games"},
-}
+	subCats = map[string]map[string][]string{
+		"nyaa": {
+			"anime":       {"AMV", "Eng", "Non-Eng", "Raw"},
+			"manga":       {"Eng", "Non-Eng", "Raw"},
+			"audio":       {"Lossy", "Lossless"},
+			"pictures":    {"Photos", "Graphics"},
+			"live action": {"Promo", "Eng", "Non-Eng", "Raw"},
+			"software":    {"Applications", "Games"},
+		},
+		"sukebei": {
+			"art":  {"Anime", "Doujinshi", "Games", "Manga", "Pictures"},
+			"real": {"Photos", "Videos"},
+		},
+	}
+)
 
-func NyaaHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
+func SearchHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
 	msgSlice := strings.SplitN(update.Message.Text, " ", 2)
 	if len(msgSlice) < 2 {
 		b.SendMessage(ctx, &bot.SendMessageParams{
@@ -35,16 +46,18 @@ func NyaaHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
 		})
 		return
 	}
+
+	site := msgSlice[0][1:]
 	b.SendMessage(ctx, &bot.SendMessageParams{
 		ChatID: update.Message.Chat.ID,
 		Text:   "Please choose one of the following categories: ",
 		ReplyMarkup: &models.InlineKeyboardMarkup{
-			InlineKeyboard: utils.GenerateCatBtns(cats, "nyaa", msgSlice[1]),
+			InlineKeyboard: utils.GenerateCatBtns(cats[site], site, msgSlice[1]),
 		},
 	})
 }
 
-func NyaaCatCallbackHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
+func SearchCallbackHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
 	b.AnswerCallbackQuery(ctx, &bot.AnswerCallbackQueryParams{
 		CallbackQueryID: update.CallbackQuery.ID,
 		ShowAlert:       false,
@@ -58,7 +71,7 @@ func NyaaCatCallbackHandler(ctx context.Context, b *bot.Bot, update *models.Upda
 			MessageID: update.CallbackQuery.Message.MessageID,
 			Text:      "Choose one of the following sub-categories: ",
 			ReplyMarkup: &models.InlineKeyboardMarkup{
-				InlineKeyboard: utils.GenerateSubCatBtns(subCatMap, callbackSlice),
+				InlineKeyboard: utils.GenerateSubCatBtns(subCats[callbackSlice[0]], callbackSlice),
 			},
 		})
 		return
@@ -69,7 +82,7 @@ func NyaaCatCallbackHandler(ctx context.Context, b *bot.Bot, update *models.Upda
 	params.Set("sub_category", callbackSlice[2])
 	params.Set("q", callbackSlice[3])
 
-	url := fmt.Sprintf("%s?%s", constants.Nyaa, params.Encode())
+	url := fmt.Sprintf("%s?%s", constants.SearchEndpoint[callbackSlice[0]], params.Encode())
 	bytes, statusCode, err := utils.MakeRequest(url)
 	if statusCode != 200 || err != nil {
 		b.EditMessageText(ctx, &bot.EditMessageTextParams{

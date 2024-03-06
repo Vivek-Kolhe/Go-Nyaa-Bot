@@ -45,16 +45,9 @@ func MagnetCallbackHandler(ctx context.Context, b *bot.Bot, update *models.Updat
 		ShowAlert:       false,
 	})
 
-	var url string
 	callbackData := strings.Split(update.CallbackQuery.Data, " #$ ")
 	site, torrID := callbackData[1], callbackData[2]
-
-	switch site {
-	case "nyaa":
-		url = fmt.Sprintf("%s%s", constants.NyaaMagnet, torrID)
-	case "sukebei":
-		url = fmt.Sprintf("%s%s", constants.SukebeiMagnet, torrID)
-	}
+	url := fmt.Sprintf("%s%s", constants.MagnetEndpoint[site], torrID)
 
 	bytes, statusCode, err := utils.MakeRequest(url)
 	if statusCode != 200 || err != nil {
