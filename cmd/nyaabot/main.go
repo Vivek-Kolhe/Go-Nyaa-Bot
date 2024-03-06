@@ -24,7 +24,6 @@ func main() {
 
 	opts := []bot.Option{
 		bot.WithDefaultHandler(handlers.DefaultHandler),
-		bot.WithCallbackQueryDataHandler("help", bot.MatchTypePrefix, handlers.HelpCallbackHandler),
 		bot.WithCallbackQueryDataHandler("magnet", bot.MatchTypePrefix, handlers.MagnetCallbackHandler),
 		bot.WithCallbackQueryDataHandler("nyaa", bot.MatchTypePrefix, handlers.SearchCallbackHandler),
 		bot.WithCallbackQueryDataHandler("sukebei", bot.MatchTypePrefix, handlers.SearchCallbackHandler),

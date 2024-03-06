@@ -42,7 +42,7 @@ func SearchHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
 	if len(msgSlice) < 2 {
 		b.SendMessage(ctx, &bot.SendMessageParams{
 			ChatID: update.Message.Chat.ID,
-			Text:   "Missing search query!",
+			Text:   constants.MissingQueryMessage,
 		})
 		return
 	}
@@ -50,7 +50,7 @@ func SearchHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
 	site := msgSlice[0][1:]
 	b.SendMessage(ctx, &bot.SendMessageParams{
 		ChatID: update.Message.Chat.ID,
-		Text:   "Please choose one of the following categories: ",
+		Text:   constants.CatMessage,
 		ReplyMarkup: &models.InlineKeyboardMarkup{
 			InlineKeyboard: utils.GenerateCatBtns(cats[site], site, msgSlice[1]),
 		},
@@ -69,7 +69,7 @@ func SearchCallbackHandler(ctx context.Context, b *bot.Bot, update *models.Updat
 		b.EditMessageText(ctx, &bot.EditMessageTextParams{
 			ChatID:    update.CallbackQuery.Message.Chat.ID,
 			MessageID: update.CallbackQuery.Message.MessageID,
-			Text:      "Choose one of the following sub-categories: ",
+			Text:      constants.SubCatMessage,
 			ReplyMarkup: &models.InlineKeyboardMarkup{
 				InlineKeyboard: utils.GenerateSubCatBtns(subCats[callbackSlice[0]], callbackSlice),
 			},
@@ -88,7 +88,7 @@ func SearchCallbackHandler(ctx context.Context, b *bot.Bot, update *models.Updat
 		b.EditMessageText(ctx, &bot.EditMessageTextParams{
 			ChatID:    update.CallbackQuery.Message.Chat.ID,
 			MessageID: update.CallbackQuery.Message.MessageID,
-			Text:      url,
+			Text:      constants.SomethingWentWrong,
 		})
 		return
 	}
@@ -103,7 +103,7 @@ func SearchCallbackHandler(ctx context.Context, b *bot.Bot, update *models.Updat
 		b.EditMessageText(ctx, &bot.EditMessageTextParams{
 			ChatID:    update.CallbackQuery.Message.Chat.ID,
 			MessageID: update.CallbackQuery.Message.MessageID,
-			Text:      "No results found!",
+			Text:      constants.NoResultMessage,
 		})
 		return
 	}

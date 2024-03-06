@@ -55,14 +55,14 @@ func MagnetCallbackHandler(ctx context.Context, b *bot.Bot, update *models.Updat
 			b.EditMessageText(ctx, &bot.EditMessageTextParams{
 				ChatID:    update.CallbackQuery.Message.Chat.ID,
 				MessageID: update.CallbackQuery.Message.MessageID,
-				Text:      "Invalid ID!",
+				Text:      constants.InvalidIDMessage,
 			})
 			return
 		}
 		b.EditMessageText(ctx, &bot.EditMessageTextParams{
 			ChatID:    update.CallbackQuery.Message.Chat.ID,
 			MessageID: update.CallbackQuery.Message.MessageID,
-			Text:      "Something went wrong!",
+			Text:      constants.SomethingWentWrong,
 		})
 		return
 	}

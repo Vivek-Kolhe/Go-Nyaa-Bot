@@ -6,6 +6,9 @@ import "github.com/go-telegram/bot"
 // I found this workaround as passing the complete as string doesn't work, I don't know if that was intentional or not.
 // Gotta find a cleaner way to do this.
 
+// Default message for any unrecognized command.
+var DefaultMessage = "Sorry, I didn't understand that command. Please make sure you've entered a valid instruction, or type /help for assistance."
+
 // Messages used with start command.
 var StartMessage = bot.EscapeMarkdown("Hello!\n") +
 	"I can fetch torrents from [Nyaa](https://nyaa.si/) and [Sukebei](https://sukebei.nyaa.si/)" +
@@ -17,15 +20,24 @@ var HelpMessage = "*Note:* " +
 	"*Available commands:*" +
 	bot.EscapeMarkdown("\n- /start - To check whether the bot is alive.\n- /help - To display this message.\n- /magnet - To get torrent info from ") +
 	"*Nyaa* and *Sukebei* " +
-	bot.EscapeMarkdown("using ID.")
+	bot.EscapeMarkdown("using ID.") +
+	bot.EscapeMarkdown("\n- /nyaa - For searching torrents on Nyaa.") +
+	bot.EscapeMarkdown("\n- /sukebei - For searching torrents on Sukebei.")
 
-var NyaaHelpMessage = "*For searching on [Nyaa](https://nyaa.si)*:" +
-	bot.EscapeMarkdown("\n\n- /anime - Anime torrents.\n- /manga - Manga torrents.\n- /audio - Audio/Soundtrack torrents.\n- /live_action - Live Action shows/movies torrents.\n- /pictures - Picturebook/Graphics torrents.\n- /software - Games/Applications torrents.")
+// Messages used with magnet command.
+var (
+	MagnetMessage    = "Where do you wanna search?"
+	NoIDMessage      = "No ID provided."
+	InvalidIDMessage = "Invalid ID!"
+)
 
-var SukebeiHelpMessage = "*For searching on [Sukebei](https://sukebei.nyaa.si)*:" +
-	bot.EscapeMarkdown("\n\n- /art - Art torrents (anime, manga, doujinshi etc.).\n- /real - Non-Anime torrents.")
+// Messages used with nyaa and sukebei search commands.
+var (
+	MissingQueryMessage = "Missing search query!"
+	CatMessage          = "Please choose one of the following categories: "
+	SubCatMessage       = "Please choose one of the following sub-categories: "
+	NoResultMessage     = "No results found! It's like they pulled a disappearing act. Try another search and let the hunt continue!"
+)
 
-// Messages used with magnet command
-var MagnetMessage = "Where do you wanna search?"
-
-var NoIDMessage = "No ID provided."
+// Common messages.
+var SomethingWentWrong = "Something went wrong!"
