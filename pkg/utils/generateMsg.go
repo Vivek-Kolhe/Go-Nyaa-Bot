@@ -20,6 +20,7 @@ func GenerateTorrInfoMsg(data structs.TorrInfo) string {
 	return msg
 }
 
+// Function for generating message for torrent listing using Torrents struct. Used in search handler.
 func GenerateTorrListMsg(data structs.Torrents) []string {
 	msgs := make([]string, 0)
 	for i := 0; i < min(data.Count, 10); i++ {
