@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"net/http"
 	"os"
 	"os/signal"
 
@@ -20,6 +21,13 @@ import (
 func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer cancel()
+
+	http.HandleFunc("/", Hello)
+	go func() {
+		if err := http.ListenAndServe(":8000", nil); err != nil {
+			log.Fatal(err.Error())
+		}
+	}()
 
 	opts := []bot.Option{
 		bot.WithDefaultHandler(handlers.DefaultHandler),
