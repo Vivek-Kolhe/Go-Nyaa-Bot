@@ -23,11 +23,6 @@ func main() {
 	defer cancel()
 
 	http.HandleFunc("/", Hello)
-	go func() {
-		if err := http.ListenAndServe(":8000", nil); err != nil {
-			log.Fatal(err.Error())
-		}
-	}()
 
 	opts := []bot.Option{
 		bot.WithDefaultHandler(handlers.DefaultHandler),
@@ -46,5 +41,11 @@ func main() {
 	b.RegisterHandler(bot.HandlerTypeMessageText, "/magnet", bot.MatchTypePrefix, handlers.MagnetHandler)
 	b.RegisterHandler(bot.HandlerTypeMessageText, "/nyaa", bot.MatchTypePrefix, handlers.SearchHandler)
 	b.RegisterHandler(bot.HandlerTypeMessageText, "/sukebei", bot.MatchTypePrefix, handlers.SearchHandler)
-	b.Start(ctx)
+	go func() {
+		b.Start(ctx)
+	}()
+
+	if err := http.ListenAndServe(":8000", nil); err != nil {
+		log.Fatal(err.Error())
+	}
 }
