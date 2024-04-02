@@ -18,7 +18,7 @@ var StartMessage = bot.EscapeMarkdown("Hello!\n") +
 var HelpMessage = "*Note:* " +
 	bot.EscapeMarkdown("The bot will fetch some of the recent torrents, so be specific with search query.\n\n") +
 	"*Available commands:*" +
-	bot.EscapeMarkdown("\n- /start - To check whether the bot is alive.\n- /help - To display this message.\n- /magnet - To get torrent info from ") +
+	bot.EscapeMarkdown("\n- /start - To start the bot.\n- /ping - Pong!\n- /help - To display this message.\n- /magnet - To get torrent info from ") +
 	"*Nyaa* and *Sukebei* " +
 	bot.EscapeMarkdown("using ID.") +
 	bot.EscapeMarkdown("\n- /nyaa - For searching torrents on Nyaa.") +
