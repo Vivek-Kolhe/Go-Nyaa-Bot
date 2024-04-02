@@ -38,9 +38,11 @@ func main() {
 
 	b.RegisterHandler(bot.HandlerTypeMessageText, "/start", bot.MatchTypeExact, handlers.StartHandler)
 	b.RegisterHandler(bot.HandlerTypeMessageText, "/help", bot.MatchTypeExact, handlers.HelpHandler)
+	b.RegisterHandler(bot.HandlerTypeMessageText, "/ping", bot.MatchTypeExact, handlers.PingHandler)
 	b.RegisterHandler(bot.HandlerTypeMessageText, "/magnet", bot.MatchTypePrefix, handlers.MagnetHandler)
 	b.RegisterHandler(bot.HandlerTypeMessageText, "/nyaa", bot.MatchTypePrefix, handlers.SearchHandler)
 	b.RegisterHandler(bot.HandlerTypeMessageText, "/sukebei", bot.MatchTypePrefix, handlers.SearchHandler)
+
 	go func() {
 		b.Start(ctx)
 	}()

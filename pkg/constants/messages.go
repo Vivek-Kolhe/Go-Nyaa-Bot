@@ -24,6 +24,9 @@ var HelpMessage = "*Note:* " +
 	bot.EscapeMarkdown("\n- /nyaa - For searching torrents on Nyaa.") +
 	bot.EscapeMarkdown("\n- /sukebei - For searching torrents on Sukebei.")
 
+// Messages used with ping-pong command.
+var PingMessage = bot.EscapeMarkdown("Pong!")
+
 // Messages used with magnet command.
 var (
 	MagnetMessage    = "Where do you wanna search?"
